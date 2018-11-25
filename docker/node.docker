@@ -1,0 +1,17 @@
+Offline
+
+FROM node
+
+WORKDIR /var/www
+
+
+docker-composy.yml
+
+  node:
+    container_name: node
+    build:
+      context: ./
+      dockerfile: docker/node.docker
+    volumes:
+      - ./:/var/www
+    tty: true
