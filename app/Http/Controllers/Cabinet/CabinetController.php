@@ -7,13 +7,10 @@ use App\Http\Controllers\Controller;
 
 class CabinetController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index()
     {
+        session()->put('active', 'dashboard');
+
         return view('cabinet.home');
     }
 }

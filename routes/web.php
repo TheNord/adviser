@@ -12,13 +12,38 @@
 */
 
 Auth::routes();
+Route::get('/login/verify', 'Auth\LoginController@phone')->name('login.phone');
+Route::post('/login/verify', 'Auth\LoginController@verify')->name('login.phone');
 
 Route::get('/verify/{token}', 'Auth\RegisterController@verify')->name('register.verify');
 
 Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('/cabinet', 'Cabinet\CabinetController@index')->name('cabinet');
+// Cabinet
+Route::group(
+    [
+        'prefix' => 'cabinet',
+        'as' => 'cabinet.',
+        'namespace' => 'Cabinet',
+        'middleware' => ['auth']
+    ],
+    function () {
+        Route::get('/', 'CabinetController@index')->name('home');
+        Route::get('/adverts', 'Adverts\AdvertsController@index')->name('adverts.index');
 
+        Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
+            Route::get('/', 'ProfileController@index')->name('home');
+            Route::get('/edit', 'ProfileController@edit')->name('edit');
+            Route::put('/update', 'ProfileController@update')->name('update');
+
+            Route::post('/phone', 'PhoneController@request');
+            Route::get('/phone', 'PhoneController@form')->name('phone');
+            Route::put('/phone', 'PhoneController@verify')->name('phone.verify');
+
+            Route::post('/phone/auth', 'PhoneController@auth')->name('phone.auth');
+        });
+    }
+);
 
 // Admins
 Route::group(
