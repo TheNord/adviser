@@ -1,5 +1,5 @@
 @component('mail::message')
-# Email confirmation
+# Email Confirmation
 
 Please refer to the following link:
 

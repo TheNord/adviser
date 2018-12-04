@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\UseCases\Auth\RegisterService;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\User;
+use App\Entity\User;
 use App\Http\Controllers\Controller;
-
+use App\UseCases\Auth\RegisterService;
 
 class RegisterController extends Controller
 {
@@ -28,7 +27,7 @@ class RegisterController extends Controller
         $this->service->register($request);
 
         return redirect()->route('login')
-            ->with('info', 'Check your email and click on the link to verify.');
+            ->with('success', 'Check your email and click on the link to verify.');
     }
 
     public function verify($token)
@@ -40,8 +39,7 @@ class RegisterController extends Controller
 
         try {
             $this->service->verify($user->id);
-            return redirect()->route('login')
-                ->with('success', 'Your e-mail is verified. You can now login.');
+            return redirect()->route('login')->with('success', 'Your e-mail is verified. You can now login.');
         } catch (\DomainException $e) {
             return redirect()->route('login')->with('error', $e->getMessage());
         }

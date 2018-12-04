@@ -1,26 +1,25 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Auth;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Entity\User;
 use Illuminate\Support\Str;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class RegisterTestTest extends TestCase
+class RegisterTest extends TestCase
 {
-    public function testForm()
+    public function testForm(): void
     {
         $response = $this->get('/register');
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertSee('Register');
     }
 
-    public function testErrors()
+    public function testErrors(): void
     {
-        $response = $this->post('/register',[
+        $response = $this->post('/register', [
             'name' => '',
             'email' => '',
             'password' => '',
@@ -32,7 +31,7 @@ class RegisterTestTest extends TestCase
             ->assertSessionHasErrors(['name', 'email', 'password']);
     }
 
-    public function testSuccess()
+    public function testSuccess(): void
     {
         $user = factory(User::class)->make();
 
@@ -46,10 +45,10 @@ class RegisterTestTest extends TestCase
         $response
             ->assertStatus(302)
             ->assertRedirect('/login')
-            ->assertSessionHas('info', 'Check your email and click on the link to verify.');
+            ->assertSessionHas('success', 'Check your email and click on the link to verify.');
     }
 
-    public function testVerifyIncorrect()
+    public function testVerifyIncorrect(): void
     {
         $response = $this->get('/verify/' . Str::uuid());
 
@@ -59,16 +58,16 @@ class RegisterTestTest extends TestCase
             ->assertSessionHas('error', 'Sorry your link cannot be identified.');
     }
 
-    public function testVerify()
+    public function testVerify(): void
     {
         $user = factory(User::class)->create([
             'status' => User::STATUS_WAIT,
             'verify_token' => Str::uuid(),
         ]);
 
-        $reponse = $this->get('/verify/' . $user->verify_token);
+        $response = $this->get('/verify/' . $user->verify_token);
 
-        $reponse
+        $response
             ->assertStatus(302)
             ->assertRedirect('/login')
             ->assertSessionHas('success', 'Your e-mail is verified. You can now login.');

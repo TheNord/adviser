@@ -2,12 +2,12 @@
 
 namespace App\UseCases\Auth;
 
+use App\Entity\User;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\User;
+use App\Mail\Auth\VerifyMail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Mail\Mailer;
-use App\Mail\Auth\VerifyMail;
 
 class RegisterService
 {
@@ -29,12 +29,12 @@ class RegisterService
         );
 
         $this->mailer->to($user->email)->send(new VerifyMail($user));
-
         $this->dispatcher->dispatch(new Registered($user));
     }
 
     public function verify($id): void
     {
+        /** @var User $user */
         $user = User::findOrFail($id);
         $user->verify();
     }

@@ -1,11 +1,11 @@
 <?php
 
+use App\Entity\User;
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
 class UsersTableSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         factory(User::class, 10)->create();
     }

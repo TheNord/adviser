@@ -1,25 +1,24 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Auth;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Entity\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LoginTest extends TestCase
 {
-    public function testForm()
+    public function testForm(): void
     {
         $response = $this->get('/login');
 
-        $response->assertStatus(200)
+        $response
+            ->assertStatus(200)
             ->assertSee('Login');
     }
 
-    public function testErrors()
+    public function testErrors(): void
     {
-        $response = $this->post('/login',[
+        $response = $this->post('/login', [
             'email' => '',
             'password' => '',
         ]);
@@ -29,7 +28,7 @@ class LoginTest extends TestCase
             ->assertSessionHasErrors(['email', 'password']);
     }
 
-    public function testWait()
+    public function testWait(): void
     {
         $user = factory(User::class)->create(['status' => User::STATUS_WAIT]);
 
@@ -41,10 +40,10 @@ class LoginTest extends TestCase
         $response
             ->assertStatus(302)
             ->assertRedirect('/')
-            ->assertSessionHas('error', 'You need confirm your account. Please check your email.');
+            ->assertSessionHas('error', 'You need to confirm your account. Please check your email.');
     }
 
-    public function testActive()
+    public function testActive(): void
     {
         $user = factory(User::class)->create(['status' => User::STATUS_ACTIVE]);
 

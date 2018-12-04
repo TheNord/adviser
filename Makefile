@@ -8,19 +8,20 @@ docker-build:
 	docker-compose up --build -d
 
 test:
-	docker-compose exec php-fpm vendor/bin/phpunit --color=always
+	docker-compose exec php-cli vendor/bin/phpunit
+
+assets-install:
+	docker-compose exec node yarn install
+
+assets-rebuild:
+	docker-compose exec node npm rebuild node-sass --force
+
+assets-dev:
+	docker-compose exec node yarn run dev
+
+assets-watch:
+	docker-compose exec node yarn run watch
 
 perm:
-	sudo chown ${USER}:${USER} bootstrap/cache -R
-	sudo chown ${USER}:${USER} storage -R
-	if [ -d "node_modules" ]; then sudo chown ${USER}:${USER} node_modules -R; fi
-	if [ -d "public" ]; then sudo chown ${USER}:${USER} public -R; fi
-
-migrate:
-	docker-compose exec php-fpm php artisan migrate
-
-helper-model:
-	docker exec php-fpm php artisan ide-helper:models
-
-start-seed:
-	docker exec php-fpm php artisan db:seed
+	sudo chgrp -R www-data storage bootstrap/cache
+	sudo chmod -R ug+rwx storage bootstrap/cache

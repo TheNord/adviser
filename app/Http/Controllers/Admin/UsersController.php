@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\User\CreateRequest;
-use App\Http\Requests\User\UpdateRequest;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Entity\User;
+use App\Http\Requests\Admin\Users\CreateRequest;
+use App\Http\Requests\Admin\Users\UpdateRequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
+use App\UseCases\Auth\RegisterService;
+use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
+    private $register;
+
+    public function __construct(RegisterService $register)
+    {
+        $this->register = $register;
+    }
+
     public function index(Request $request)
     {
-        session()->put('active', 'users');
-
         $query = User::orderByDesc('id');
 
         if (!empty($value = $request->get('id'))) {
@@ -39,18 +44,14 @@ class UsersController extends Controller
 
         $users = $query->paginate(20);
 
-        $roles = [
-            User::ROLE_USER => 'User',
-            User::ROLE_ADMIN => 'Admin',
-        ];
-
         $statuses = [
             User::STATUS_WAIT => 'Waiting',
             User::STATUS_ACTIVE => 'Active',
         ];
 
+        $roles = User::rolesList();
 
-        return view('admin.users.index', compact('users', 'roles', 'statuses'));
+        return view('admin.users.index', compact('users', 'statuses', 'roles'));
     }
 
     public function create()
@@ -62,8 +63,7 @@ class UsersController extends Controller
     {
         $user = User::new(
             $request['name'],
-            $request['email'],
-            $request['password']
+            $request['email']
         );
 
         return redirect()->route('admin.users.show', $user);
@@ -71,39 +71,22 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
-
         return view('admin.users.show', compact('user'));
     }
 
     public function edit(User $user)
     {
-        $roles = [
-          User::ROLE_USER => 'User',
-          User::ROLE_ADMIN => 'Admin',
-        ];
+        $roles = User::rolesList();
 
-        $statuses = [
-          User::STATUS_WAIT => 'Waiting',
-          User::STATUS_ACTIVE => 'Active',
-        ];
-
-        return view('admin.users.edit', compact('user', 'roles', 'statuses'));
+        return view('admin.users.edit', compact('user', 'roles'));
     }
 
     public function update(UpdateRequest $request, User $user)
     {
-        $user->update([
-            'name' => $request['name'],
-            'email' => $request['email'],
-        ]);
+        $user->update($request->only(['name', 'email']));
 
         if ($request['role'] !== $user->role) {
             $user->changeRole($request['role']);
-        }
-
-        if ($request['password'] != null) {
-            $user->password = Hash::make($request['password']);
-            $user->save();
         }
 
         return redirect()->route('admin.users.show', $user);
@@ -118,7 +101,7 @@ class UsersController extends Controller
 
     public function verify(User $user)
     {
-        $user->verify();
+        $this->register->verify($user->id);
 
         return redirect()->route('admin.users.show', $user);
     }

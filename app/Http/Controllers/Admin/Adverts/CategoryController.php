@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Adverts;
 
+use App\Entity\Adverts\Category;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Adverts\CategoryRequest;
-use App\Models\Adverts\Category;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        session()->put('active', 'advert.categories');
-
         $categories = Category::defaultOrder()->withDepth()->get();
 
         return view('admin.adverts.categories.index', compact('categories'));
@@ -24,8 +22,14 @@ class CategoryController extends Controller
         return view('admin.adverts.categories.create', compact('parents'));
     }
 
-    public function store(CategoryRequest $request)
+    public function store(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255',
+            'parent' => 'nullable|integer|exists:advert_categories,id',
+        ]);
+
         $category = Category::create([
             'name' => $request['name'],
             'slug' => $request['slug'],
@@ -33,13 +37,6 @@ class CategoryController extends Controller
         ]);
 
         return redirect()->route('admin.adverts.categories.show', $category);
-    }
-
-    public function edit(Category $category)
-    {
-        $parents = Category::defaultOrder()->withDepth()->get();
-
-        return view('admin.adverts.categories.edit', compact('parents', 'category'));
     }
 
     public function show(Category $category)
@@ -50,22 +47,28 @@ class CategoryController extends Controller
         return view('admin.adverts.categories.show', compact('category', 'attributes', 'parentAttributes'));
     }
 
-    public function update(CategoryRequest $request, Category $category)
+    public function edit(Category $category)
     {
+        $parents = Category::defaultOrder()->withDepth()->get();
+
+        return view('admin.adverts.categories.edit', compact('category', 'parents'));
+    }
+
+    public function update(Request $request, Category $category)
+    {
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255',
+            'parent' => 'nullable|integer|exists:advert_categories,id',
+        ]);
+
         $category->update([
             'name' => $request['name'],
             'slug' => $request['slug'],
             'parent_id' => $request['parent'],
         ]);
 
-        return redirect()->route('admin.adverts.categories.show', $category);;
-    }
-
-    public function destroy(Category $category)
-    {
-        $category->delete();
-
-        return redirect()->route('admin.adverts.categories.index');
+        return redirect()->route('admin.adverts.categories.show', $category);
     }
 
     public function first(Category $category)
@@ -96,6 +99,13 @@ class CategoryController extends Controller
         if ($last = $category->siblings()->defaultOrder('desc')->first()) {
             $category->insertAfterNode($last);
         }
+
+        return redirect()->route('admin.adverts.categories.index');
+    }
+
+    public function destroy(Category $category)
+    {
+        $category->delete();
 
         return redirect()->route('admin.adverts.categories.index');
     }

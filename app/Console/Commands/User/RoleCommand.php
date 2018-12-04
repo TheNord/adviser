@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\User;
 
-use App\Models\User;
+use App\Entity\User;
 use Illuminate\Console\Command;
 
 class RoleCommand extends Command
@@ -16,19 +16,20 @@ class RoleCommand extends Command
         $email = $this->argument('email');
         $role = $this->argument('role');
 
+        /** @var User $user */
         if (!$user = User::where('email', $email)->first()) {
-            $this->error('Undefined user with email' . $email);
+            $this->error('Undefined user with email ' . $email);
             return false;
         }
 
-        try{
+        try {
             $user->changeRole($role);
         } catch (\DomainException $e) {
             $this->error($e->getMessage());
             return false;
         }
 
-        $this->info('Role is successfully change');
+        $this->info('Role is successfully changed');
         return true;
     }
 }

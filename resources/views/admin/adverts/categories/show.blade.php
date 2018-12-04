@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('admin._nav')
+    @include('admin.adverts.categories._nav')
 
     <div class="d-flex flex-row mb-3">
         <a href="{{ route('admin.adverts.categories.edit', $category) }}" class="btn btn-primary mr-1">Edit</a>
@@ -47,7 +47,7 @@
                 <td>{{ $attribute->sort }}</td>
                 <td>{{ $attribute->name }}</td>
                 <td>{{ $attribute->type }}</td>
-                <td>{{ $attribute->required ? 'Yes' : 'No' }}</td>
+                <td>{{ $attribute->required ? 'Yes' : '' }}</td>
             </tr>
         @empty
             <tr><td colspan="4">None</td></tr>
@@ -62,7 +62,7 @@
                     <a href="{{ route('admin.adverts.categories.attributes.show', [$category, $attribute]) }}">{{ $attribute->name }}</a>
                 </td>
                 <td>{{ $attribute->type }}</td>
-                <td>{{ $attribute->required ? 'Yes' : 'No' }}</td>
+                <td>{{ $attribute->required ? 'Yes' : '' }}</td>
             </tr>
         @empty
             <tr><td colspan="4">None</td></tr>

@@ -1,7 +1,7 @@
 <?php
 
-
-use App\Models\User;
+use App\Entity\User;
+use Carbon\Carbon;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
@@ -16,7 +16,9 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(App\Models\User::class, function (Faker $faker) {
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+
+$factory->define(User::class, function (Faker $faker) {
     $active = $faker->boolean;
     $phoneActive = $faker->boolean;
     return [
@@ -29,8 +31,8 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
         'verify_token' => $active ? null : Str::uuid(),
         'phone_verify_token' => $phoneActive ? null : Str::uuid(),
-        'phone_verify_token_expire' => $phoneActive ? null : \Carbon\Carbon::now()->addSecond(300),
-        'status' => $active ? User::STATUS_ACTIVE : User::STATUS_WAIT,
+        'phone_verify_token_expire' => $phoneActive ? null : Carbon::now()->addSeconds(300),
         'role' => $active ? $faker->randomElement([User::ROLE_USER, User::ROLE_ADMIN]) : User::ROLE_USER,
+        'status' => $active ? User::STATUS_ACTIVE : User::STATUS_WAIT,
     ];
 });

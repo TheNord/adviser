@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Adverts;
 
+use App\Entity\Adverts\Attribute;
+use App\Entity\Adverts\Category;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Adverts\AttributeRequest;
-use App\Models\Adverts\Attribute;
-use App\Models\Adverts\Category;
-
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AttributeController extends Controller
 {
@@ -14,11 +14,19 @@ class AttributeController extends Controller
     {
         $types = Attribute::typesList();
 
-        return view('admin.adverts.categories.attributes.create', compact('types', 'category'));
+        return view('admin.adverts.categories.attributes.create', compact('category', 'types'));
     }
 
-    public function store(AttributeRequest $request, Category $category)
+    public function store(Request $request, Category $category)
     {
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'type' => ['required', 'string', 'max:255', Rule::in(array_keys(Attribute::typesList()))],
+            'required' => 'nullable|string|max:255',
+            'variants' => 'nullable|string',
+            'sort' => 'required|integer',
+        ]);
+
         $attribute = $category->attributes()->create([
             'name' => $request['name'],
             'type' => $request['type'],
@@ -30,6 +38,11 @@ class AttributeController extends Controller
         return redirect()->route('admin.adverts.categories.attributes.show', [$category, $attribute]);
     }
 
+    public function show(Category $category, Attribute $attribute)
+    {
+        return view('admin.adverts.categories.attributes.show', compact('category', 'attribute'));
+    }
+
     public function edit(Category $category, Attribute $attribute)
     {
         $types = Attribute::typesList();
@@ -37,19 +50,16 @@ class AttributeController extends Controller
         return view('admin.adverts.categories.attributes.edit', compact('category', 'attribute', 'types'));
     }
 
-    public function show(Category $category, Attribute $attribute)
+    public function update(Request $request, Category $category, Attribute $attribute)
     {
-        if ($attribute->category_id != $category->id) {
-            abort(404);
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'type' => ['required', 'string', 'max:255', Rule::in(array_keys(Attribute::typesList()))],
+            'required' => 'nullable|string|max:255',
+            'variants' => 'nullable|string',
+            'sort' => 'required|integer',
+        ]);
 
-            return false;
-        }
-
-        return view('admin.adverts.categories.attributes.show', compact('category', 'attribute'));
-    }
-
-    public function update(AttributeRequest $request, Category $category, Attribute $attribute)
-    {
         $category->attributes()->findOrFail($attribute->id)->update([
             'name' => $request['name'],
             'type' => $request['type'],
@@ -58,14 +68,13 @@ class AttributeController extends Controller
             'sort' => $request['sort'],
         ]);
 
-        return redirect()->route('admin.adverts.categories.show', $category);;
+        return redirect()->route('admin.adverts.categories.show', $category);
     }
 
     public function destroy(Category $category)
     {
         $category->delete();
 
-        return redirect()->route('admin.adverts.categories.index');
+        return redirect()->route('admin.adverts.categories.show', $category);
     }
-
 }

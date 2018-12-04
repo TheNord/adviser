@@ -2,38 +2,35 @@
 
 namespace App\Http\Controllers\Cabinet;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Auth;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function index()
     {
-        session()->put('active', 'profile');
-
         $user = Auth::user();
 
         return view('cabinet.profile.home', compact('user'));
-   }
+    }
 
     public function edit()
     {
         $user = Auth::user();
 
         return view('cabinet.profile.edit', compact('user'));
-   }
+    }
 
     public function update(Request $request)
     {
-        $user = Auth::user();
-
         $this->validate($request, [
-           'name' => 'required|string|max:255',
-           'last_name' => 'required|string|max:255',
-           'phone' => ['required', 'string', 'regex:/^\d+$/s', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:255|regex:/^\d+$/s',
         ]);
+
+        $user = Auth::user();
 
         $oldPhone = $user->phone;
 
@@ -44,5 +41,5 @@ class ProfileController extends Controller
         }
 
         return redirect()->route('cabinet.profile.home');
-   }
+    }
 }

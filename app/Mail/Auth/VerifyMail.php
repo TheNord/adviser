@@ -2,15 +2,13 @@
 
 namespace App\Mail\Auth;
 
-use App\Models\User;
-use Illuminate\Bus\Queueable;
+use App\Entity\User;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class VerifyMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use SerializesModels;
 
     public $user;
 
