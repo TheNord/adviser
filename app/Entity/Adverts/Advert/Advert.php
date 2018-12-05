@@ -136,6 +136,11 @@ class Advert extends Model
         return $this->status === self::STATUS_CLOSED;
     }
 
+    public function favorites()
+    {
+        return $this->belongsToMany(User::class, 'advert_favorites', 'advert_id', 'user_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -187,5 +192,12 @@ class Advert extends Model
             $ids = array_merge($ids, $childrenIds);
         }
         return $query->whereIn('region_id', $ids);
+    }
+
+    public function scopeFavoredByUser(Builder $query, User $user)
+    {
+        return $query->whereHas('favorites', function(Builder $query) use ($user) {
+            $query->where('user_id', $user->id);
+        });
     }
 }

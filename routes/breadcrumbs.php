@@ -121,6 +121,12 @@ Breadcrumbs::register('cabinet.adverts.photos', function (Crumbs $crumbs) {
     $crumbs->push('Add photos', route('cabinet.adverts.photos'));
 });
 
+// Cabinet >> Favorites
+Breadcrumbs::register('cabinet.favorites.index', function (Crumbs $crumbs) {
+    $crumbs->parent('cabinet.home');
+    $crumbs->push('Favorites Adverts', route('cabinet.favorites.index'));
+});
+
 // Admin
 
 Breadcrumbs::register('admin.home', function (Crumbs $crumbs) {
