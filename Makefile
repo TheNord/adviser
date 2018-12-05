@@ -1,10 +1,10 @@
-docker-up:
+docker-up: memory
 	docker-compose up -d
 
 docker-down:
 	docker-compose down
 
-docker-build:
+docker-build: memory
 	docker-compose up --build -d
 
 test:
@@ -28,3 +28,6 @@ perm:
 
 migrate:
 	docker-compose exec php-cli php artisan migrate
+
+memory:
+	sudo sysctl -w vm.max_map_count=262144
