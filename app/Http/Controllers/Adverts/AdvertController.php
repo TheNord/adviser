@@ -34,9 +34,16 @@ class AdvertController extends Controller
             ? $category->children()->defaultOrder()->getModels()
             : Category::whereIsRoot()->defaultOrder()->getModels();
 
-        $adverts = $this->search->search($category, $region, $request, 20, $request->get('page', 1));
+        $result = $this->search->search($category, $region, $request, 20, $request->get('page', 1));
 
-        return view('adverts.index', compact('category', 'region', 'categories', 'regions', 'adverts'));
+        $adverts = $result->adverts;
+        $categoriesCounts = $result->categoriesCounts;
+        $regionsCounts = $result->regionsCounts;
+
+        return view('adverts.index', compact(
+            'category', 'region', 'categories',
+            'regions', 'adverts', 'regionsCounts', 'categoriesCounts'
+        ));
     }
 
     public function show(Advert $advert)
