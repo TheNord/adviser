@@ -26,19 +26,27 @@ class AdvertController extends Controller
         $region = $path->region;
         $category = $path->category;
 
-        $regions = $region
-            ? $region->children()->orderBy('name')->getModels()
-            : Region::roots()->orderBy('name')->getModels();
-
-        $categories = $category
-            ? $category->children()->defaultOrder()->getModels()
-            : Category::whereIsRoot()->defaultOrder()->getModels();
-
         $result = $this->search->search($category, $region, $request, 20, $request->get('page', 1));
 
         $adverts = $result->adverts;
         $categoriesCounts = $result->categoriesCounts;
         $regionsCounts = $result->regionsCounts;
+
+        $query = $region ? $region->children() : Region::roots();
+        $regions = $query->orderBy('name')->getModels();
+
+        $query = $category ? $category->children() : Category::whereIsRoot();
+        $categories = $query->defaultOrder()->getModels();
+
+        // не выводим пустые категории и регионы
+        $regions = array_filter($regions, function (Region $region) use ($regionsCounts) {
+            return isset($regionsCounts[$region->id]) && $regionsCounts[$region->id] > 0;
+        });
+
+        $categories = array_filter($categories, function (Category $category) use ($categoriesCounts) {
+            return isset($categoriesCounts[$category->id]) && $categoriesCounts[$category->id] > 0;
+        });
+
 
         return view('adverts.index', compact(
             'category', 'region', 'categories',

@@ -61,6 +61,6 @@ class Attribute extends Model
 
     public function isSelect(): bool
     {
-        return \count($this->variants) > 0;
+        return \count($this->variants) >= 2;
     }
 }

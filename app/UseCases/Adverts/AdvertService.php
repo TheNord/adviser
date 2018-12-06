@@ -11,11 +11,19 @@ use App\Http\Requests\Adverts\CreateRequest;
 use App\Http\Requests\Adverts\EditRequest;
 use App\Http\Requests\Adverts\PhotosRequest;
 use App\Http\Requests\Adverts\RejectRequest;
+use App\Services\Search\AdvertIndexer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AdvertService
 {
+    private $indexer;
+
+    public function __construct(AdvertIndexer $indexer)
+    {
+        $this->indexer = $indexer;
+    }
+
     public function create($userId, $categoryId, $regionId, CreateRequest $request): Advert
     {
         /** @var User $user */
@@ -51,7 +59,6 @@ class AdvertService
                     ]);
                 }
             }
-
             return $advert;
         });
     }
@@ -91,12 +98,16 @@ class AdvertService
     {
         $advert = $this->getAdvert($id);
         $advert->moderate(Carbon::now());
+
+        $this->indexer->index($advert);
     }
 
     public function reject($id, RejectRequest $request): void
     {
         $advert = $this->getAdvert($id);
         $advert->reject($request['reason']);
+
+        $this->indexer->remove($advert);
     }
 
     public function editAttributes($id, AttributesRequest $request): void
@@ -121,18 +132,24 @@ class AdvertService
     public function expire(Advert $advert): void
     {
         $advert->expire();
+
+        $this->indexer->remove($advert);
     }
 
     public function close($id): void
     {
         $advert = $this->getAdvert($id);
         $advert->close();
+
+        $this->indexer->remove($advert);
     }
 
     public function remove($id): void
     {
         $advert = $this->getAdvert($id);
         $advert->delete();
+
+        $this->indexer->remove($advert);
     }
 
     private function getAdvert($id): Advert
