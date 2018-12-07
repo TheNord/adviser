@@ -25,6 +25,8 @@ assets-watch:
 perm:
 	sudo chgrp -R www-data storage bootstrap/cache
 	sudo chmod -R ug+rwx storage bootstrap/cache
+	sudo chgrp -R www-data storage storage/app/public/banners
+	sudo chmod -R ug+rwx storage storage/app/public/banners
 
 migrate:
 	docker-compose exec php-cli php artisan migrate

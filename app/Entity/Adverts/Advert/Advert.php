@@ -136,11 +136,6 @@ class Advert extends Model
         return $this->status === self::STATUS_CLOSED;
     }
 
-    public function favorites()
-    {
-        return $this->belongsToMany(User::class, 'advert_favorites', 'advert_id', 'user_id');
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -164,6 +159,11 @@ class Advert extends Model
     public function photos()
     {
         return $this->hasMany(Photo::class, 'advert_id', 'id');
+    }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(User::class, 'advert_favorites', 'advert_id', 'user_id');
     }
 
     public function scopeActive(Builder $query)

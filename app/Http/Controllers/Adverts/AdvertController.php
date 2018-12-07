@@ -8,7 +8,10 @@ use App\Entity\Region;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Adverts\SearchRequest;
 use App\Http\Router\AdvertsPath;
+use App\ReadModel\AdvertReadRepository;
 use App\UseCases\Adverts\SearchService;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -23,14 +26,15 @@ class AdvertController extends Controller
 
     public function index(SearchRequest $request, AdvertsPath $path)
     {
+
         $region = $path->region;
         $category = $path->category;
 
         $result = $this->search->search($category, $region, $request, 20, $request->get('page', 1));
 
         $adverts = $result->adverts;
-        $categoriesCounts = $result->categoriesCounts;
         $regionsCounts = $result->regionsCounts;
+        $categoriesCounts = $result->categoriesCounts;
 
         $query = $region ? $region->children() : Region::roots();
         $regions = $query->orderBy('name')->getModels();
@@ -38,7 +42,6 @@ class AdvertController extends Controller
         $query = $category ? $category->children() : Category::whereIsRoot();
         $categories = $query->defaultOrder()->getModels();
 
-        // не выводим пустые категории и регионы
         $regions = array_filter($regions, function (Region $region) use ($regionsCounts) {
             return isset($regionsCounts[$region->id]) && $regionsCounts[$region->id] > 0;
         });
@@ -47,10 +50,11 @@ class AdvertController extends Controller
             return isset($categoriesCounts[$category->id]) && $categoriesCounts[$category->id] > 0;
         });
 
-
         return view('adverts.index', compact(
-            'category', 'region', 'categories',
-            'regions', 'adverts', 'regionsCounts', 'categoriesCounts'
+            'category', 'region',
+            'categories', 'regions',
+            'regionsCounts', 'categoriesCounts',
+            'adverts'
         ));
     }
 

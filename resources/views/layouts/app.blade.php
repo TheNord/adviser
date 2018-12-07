@@ -65,7 +65,6 @@
         @section('search')
             @include('layouts.partials.search', ['category' => null, 'route' => route('adverts.index')])
         @show
-
     </header>
 
     <main class="app-content py-3">

@@ -9,6 +9,7 @@ use Elasticsearch\Client;
 class InitCommand extends Command
 {
     protected $signature = 'search:init';
+
     private $client;
 
     public function __construct(Client $client)
@@ -16,25 +17,32 @@ class InitCommand extends Command
         parent::__construct();
         $this->client = $client;
     }
-
+    
     public function handle(): bool
+    {
+        $this->initAdverts();
+        $this->initBanners();
+
+        return true;
+    }
+
+    private function initAdverts(): void
     {
         try {
             $this->client->indices()->delete([
-                'index' => 'app'
+                'index' => 'adverts'
             ]);
         } catch (Missing404Exception $e) {
         }
+
         $this->client->indices()->create([
-            'index' => 'app',
+            'index' => 'adverts',
             'body' => [
                 'mappings' => [
                     'advert' => [
-                        // возвращать контент, помимо id
                         '_source' => [
                             'enabled' => true,
                         ],
-                        // под какими тимами данные будут сохраняться
                         'properties' => [
                             'id' => [
                                 'type' => 'integer',
@@ -98,8 +106,6 @@ class InitCommand extends Command
                                 'preserve_original' => true,
                                 'catenate_numbers' => true,
                             ],
-                            // фильтр для фрагметного поиска по словам
-                            // разбивает текст на части
                             'trigrams' => [
                                 'type' => 'ngram',
                                 'min_gram' => 4,
@@ -125,6 +131,45 @@ class InitCommand extends Command
                 ],
             ],
         ]);
-        return true;
+    }
+
+    private function initBanners(): void
+    {
+        try {
+            $this->client->indices()->delete([
+                'index' => 'banners'
+            ]);
+        } catch (Missing404Exception $e) {
+        }
+
+        $this->client->indices()->create([
+            'index' => 'banners',
+            'body' => [
+                'mappings' => [
+                    'banner' => [
+                        '_source' => [
+                            'enabled' => true,
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => 'integer',
+                            ],
+                            'status' => [
+                                'type' => 'keyword',
+                            ],
+                            'format' => [
+                                'type' => 'keyword',
+                            ],
+                            'categories' => [
+                                'type' => 'integer',
+                            ],
+                            'regions' => [
+                                'type' => 'integer',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

@@ -2,35 +2,34 @@
 
 namespace App\Providers;
 
-use App\Entity\Adverts\Category;
+use App\Entity\Adverts\Advert\Advert;
 use App\Entity\Region;
-
+use App\Entity\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class CacheServiceProvider extends ServiceProvider
 {
     private $classes = [
-      Region::class,
-      Category::class,
+        Region::class,
     ];
 
     public function boot(): void
     {
-        foreach ($this->classes as $class){
-            $this->registerFlush($class);
+        foreach ($this->classes as $class) {
+            $this->registerFlusher($class);
         }
-
     }
 
-    private function registerFlush($class): void
+    private function registerFlusher($class): void
     {
-        /** @var Model $class */
-        $flush = function ()  use ($class) {
+        $flush = function() use ($class) {
             Cache::tags($class)->flush();
         };
 
+        /** @var Model $class */
         $class::created($flush);
         $class::saved($flush);
         $class::updated($flush);

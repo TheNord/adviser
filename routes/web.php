@@ -23,6 +23,9 @@ Route::post('/login/phone', 'Auth\LoginController@verify');
 
 Route::get('/verify/{token}', 'Auth\RegisterController@verify')->name('register.verify');
 
+Route::get('/banner/get', 'BannerController@get')->name('banner.get');
+Route::get('/banner/{banner}/click', 'BannerController@click')->name('banner.click');
+
 Route::group([
     'prefix' => 'adverts',
     'as' => 'adverts.',
@@ -32,7 +35,6 @@ Route::group([
     Route::post('/show/{advert}/phone', 'AdvertController@phone')->name('phone');
     Route::post('/show/{advert}/favorites', 'FavoriteController@add')->name('favorites');
     Route::delete('/show/{advert}/favorites', 'FavoriteController@remove');
-
 
     Route::get('/{adverts_path?}', 'AdvertController@index')->name('index')->where('adverts_path', '.+');
 });
@@ -75,13 +77,36 @@ Route::group(
 
             Route::get('/{advert}/edit', 'ManageController@editForm')->name('edit');
             Route::put('/{advert}/edit', 'ManageController@edit');
-            Route::get('/{advert?}/photos', 'ManageController@photosForm')->name('photos');
+            Route::get('/{advert}/photos', 'ManageController@photosForm')->name('photos');
             Route::post('/{advert}/photos', 'ManageController@photos');
             Route::get('/{advert}/attributes', 'ManageController@attributesForm')->name('attributes');
             Route::post('/{advert}/attributes', 'ManageController@attributes');
             Route::post('/{advert}/send', 'ManageController@send')->name('send');
             Route::post('/{advert}/close', 'ManageController@close')->name('close');
             Route::delete('/{advert}/destroy', 'ManageController@destroy')->name('destroy');
+        });
+
+        Route::group([
+            'prefix' => 'banners',
+            'as' => 'banners.',
+            'namespace' => 'Banners',
+            'middleware' => [App\Http\Middleware\FilledProfile::class],
+        ], function () {
+            Route::get('/', 'BannerController@index')->name('index');
+            Route::get('/create', 'CreateController@category')->name('create');
+            Route::get('/create/region/{category}/{region?}', 'CreateController@region')->name('create.region');
+            Route::get('/create/banner/{category}/{region?}', 'CreateController@banner')->name('create.banner');
+            Route::post('/create/banner/{category}/{region?}', 'CreateController@store')->name('create.banner.store');
+
+            Route::get('/show/{banner}', 'BannerController@show')->name('show');
+            Route::get('/{banner}/edit', 'BannerController@editForm')->name('edit');
+            Route::put('/{banner}/edit', 'BannerController@edit');
+            Route::get('/{banner}/file', 'BannerController@fileForm')->name('file');
+            Route::put('/{banner}/file', 'BannerController@file');
+            Route::post('/{banner}/send', 'BannerController@send')->name('send');
+            Route::post('/{banner}/cancel', 'BannerController@cancel')->name('cancel');
+            Route::post('/{banner}/order', 'BannerController@order')->name('order');
+            Route::delete('/{banner}/destroy', 'BannerController@destroy')->name('destroy');
         });
     }
 );
@@ -125,6 +150,18 @@ Route::group(
                 Route::post('/{advert}/reject', 'AdvertController@reject');
                 Route::delete('/{advert}/destroy', 'AdvertController@destroy')->name('destroy');
             });
+        });
+
+        Route::group(['prefix' => 'banners', 'as' => 'banners.'], function () {
+            Route::get('/', 'BannerController@index')->name('index');
+            Route::get('/{banner}/show', 'BannerController@show')->name('show');
+            Route::get('/{banner}/edit', 'BannerController@editForm')->name('edit');
+            Route::put('/{banner}/edit', 'BannerController@edit');
+            Route::post('/{banner}/moderate', 'BannerController@moderate')->name('moderate');
+            Route::get('/{banner}/reject', 'BannerController@rejectForm')->name('reject');
+            Route::post('/{banner}/reject', 'BannerController@reject');
+            Route::post('/{banner}/pay', 'BannerController@pay')->name('pay');
+            Route::delete('/{banner}/destroy', 'BannerController@destroy')->name('destroy');
         });
     }
 );

@@ -80,25 +80,6 @@ class User extends Authenticatable
         ]);
     }
 
-    public function addToFavorites($id): void
-    {
-        if ($this->hasInFavorites($id)) {
-            throw new \DomainException('This advert is already added to favorites.');
-        }
-
-        $this->favorites()->attach($id);
-    }
-
-    public function removeFromFavorites($id): void
-    {
-        $this->favorites()->detach($id);
-    }
-
-    public function hasInFavorites($id): bool
-    {
-        return $this->favorites()->where('id', $id)->exists();
-    }
-
     public function isWait(): bool
     {
         return $this->status === self::STATUS_WAIT;
@@ -184,6 +165,24 @@ class User extends Authenticatable
     {
         $this->phone_auth = false;
         $this->saveOrFail();
+    }
+
+    public function addToFavorites($id): void
+    {
+        if ($this->hasInFavorites($id)) {
+            throw new \DomainException('This advert is already added to favorites.');
+        }
+        $this->favorites()->attach($id);
+    }
+
+    public function removeFromFavorites($id): void
+    {
+        $this->favorites()->detach($id);
+    }
+
+    public function hasInFavorites($id): bool
+    {
+        return $this->favorites()->where('id', $id)->exists();
     }
 
     public function isModerator(): bool

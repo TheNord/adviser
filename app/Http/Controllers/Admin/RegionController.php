@@ -12,7 +12,7 @@ class RegionController extends Controller
     {
         $this->middleware('can:manage-regions');
     }
-    
+
     public function index()
     {
         $regions = Region::where('parent_id', null)->orderBy('name')->get();
@@ -36,7 +36,7 @@ class RegionController extends Controller
         $this->validate($request, [
             'name' => 'required|string|max:255|unique:regions,name,NULL,id,parent_id,' . ($request['parent'] ?: 'NULL'),
             'slug' => 'required|string|max:255|unique:regions,slug,NULL,id,parent_id,' . ($request['parent'] ?: 'NULL'),
-            'parent' => 'nullable|exists:regions,id',
+            'parent' => 'optional|exists:regions,id',
         ]);
 
         $region = Region::create([

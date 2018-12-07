@@ -9,9 +9,36 @@ require('./bootstrap');
 
 $(document).on('click', '.phone-button', function () {
     var button = $(this);
-    axios.post(button.data('source')).then(function (response) {
-        button.find('.number').html(response.data)
-    }).catch(function (error) {
+
+    axios
+        .post(button.data('source'))
+        .then(function (response) {
+             button.find('.number').html(response.data)
+         })
+        .catch(function (error) {
         console.error(error);
     });
+});
+
+// проходим по всем баннерам
+$('.banner').each(function () {
+    var block = $(this);
+    var url = block.data('url');
+    var format = block.data('format');
+    var category = block.data('category');
+    var region = block.data('region');
+
+    // отправляем ajax get запрос
+    axios
+        .get(url, { params: {
+                format: format,
+                category: category,
+                region: region
+            } })
+        .then(function (response) {
+            block.html(response.data);
+        })
+        .catch(function (error) {
+            console.log(error.response);
+        });
 });

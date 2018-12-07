@@ -19,5 +19,4 @@ class SearchServiceProvider extends ServiceProvider
                 ->build();
         });
     }
-
 }

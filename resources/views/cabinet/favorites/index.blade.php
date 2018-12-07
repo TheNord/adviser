@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
     @include('cabinet.favorites._nav')
 
@@ -35,6 +36,7 @@
                 </td>
             </tr>
         @endforeach
+
         </tbody>
     </table>
 

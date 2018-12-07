@@ -21,28 +21,23 @@ class SearchService
 
     public function search(?Category $category, ?Region $region, SearchRequest $request, int $perPage, int $page): SearchResult
     {
-        // получить только заполенные атрибуты
         $values = array_filter((array)$request->input('attrs'), function ($value) {
             return !empty($value['equals']) || !empty($value['from']) || !empty($value['to']);
         });
 
         $response = $this->client->search([
-            'index' => 'app',
+            'index' => 'adverts',
             'type' => 'advert',
             'body' => [
                 '_source' => ['id'],
-                // пагинация
                 'from' => ($page - 1) * $perPage,
                 'size' => $perPage,
-                // сортируем по релевантности если это поисковой запрос, и по дате публикации если это вывод на сайте
                 'sort' => empty($request['text']) ? [
                     ['published_at' => ['order' => 'desc']],
                 ] : [],
-                // аггрегация результатов
                 'aggs' => [
                     'group_by_region' => [
                         'terms' => [
-                            // группируем по полю регион
                             'field' => 'regions',
                         ],
                     ],
@@ -56,17 +51,14 @@ class SearchService
                     'bool' => [
                         'must' => array_merge(
                             [
-                                // дополнительная проверка на статус активности
                                 ['term' => ['status' => Advert::STATUS_ACTIVE]],
                             ],
                             array_filter([
-                                // если категория указанна то фильтруем по категории
                                 $category ? ['term' => ['categories' => $category->id]] : false,
                                 $region ? ['term' => ['regions' => $region->id]] : false,
-                                // если текст не пуст то делаем поле тайтл более важным при поиске
                                 !empty($request['text']) ? ['multi_match' => [
                                     'query' => $request['text'],
-                                    'fields' => ['title^3', 'content']
+                                    'fields' => [ 'title^3', 'content' ]
                                 ]] : false,
                             ]),
                             array_map(function ($value, $id) {
