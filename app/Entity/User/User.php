@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Str;
+use PhpParser\Builder;
 
 /**
  * @property int $id
@@ -67,6 +68,27 @@ class User extends Authenticatable
             'role' => self::ROLE_USER,
             'status' => self::STATUS_WAIT,
         ]);
+    }
+
+    /** Регистрация пользователя через сеть */
+    public static function registerByNetwork(string $network, string $identity): self
+    {
+        $user = static::create([
+            'name' => $identity,
+            'email' => null,
+            'password' => null,
+            'verify_token' => null,
+            'role' => self::ROLE_USER,
+            'status' => self::STATUS_ACTIVE,
+        ]);
+
+        // через связь добавляем данные в таблицу networks
+        $user->networks()->create([
+            'network' => $network,
+            'identity' => $identity,
+        ]);
+
+        return $user;
     }
 
     public static function new($name, $email): self
@@ -210,8 +232,23 @@ class User extends Authenticatable
         return !empty($this->name) && !empty($this->last_name) && $this->isPhoneVerified();
     }
 
+    /** Связь для избранных записей */
     public function favorites()
     {
         return $this->belongsToMany(Advert::class, 'advert_favorites', 'user_id', 'advert_id');
+    }
+
+    /** Связь для социальных сетей */
+    public function networks()
+    {
+        return $this->hasMany(Network::class, 'user_id', 'id');
+    }
+
+    /** Ищет пользователя в networks, по указанному драйверу и identity */
+    public function scopeByNetwork(Builder $query, string $network, string $identity): Builder
+    {
+        return $query->whereHas('networks', function(Builder $query) use ($network, $identity) {
+            $query->where('network', $network)->where('identity', $identity);
+        });
     }
 }

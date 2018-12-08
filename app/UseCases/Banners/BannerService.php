@@ -62,8 +62,6 @@ class BannerService
             ],
         ]);
 
-        dd($response);
-
         // получаем список идшников
         if (!$ids = array_column($response['hits']['hits'], '_id')) {
             return null;

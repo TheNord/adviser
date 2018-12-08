@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2018-12-05 18:06:20.
+    * Generated on 2018-12-07 19:14:26.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -42,6 +42,7 @@ namespace PHPSTORM_META {
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
+        'App\Services\Banner\CostCalculator' => \App\Services\Banner\CostCalculator::class,
         'App\Services\Sms\SmsSender' => \App\Services\Sms\SmsRu::class,
         'Elasticsearch\Client' => \Elasticsearch\Client::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
@@ -145,6 +146,7 @@ namespace PHPSTORM_META {
         'command.ide-helper.eloquent' => \Barryvdh\LaravelIdeHelper\Console\EloquentCommand::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsManager' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsManager::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator::class,
+        'Laravel\Socialite\Contracts\Factory' => \Laravel\Socialite\SocialiteManager::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
     ]));
     override(\Illuminate\Contracts\Container\Container::make(0), map([
@@ -181,6 +183,7 @@ namespace PHPSTORM_META {
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
+        'App\Services\Banner\CostCalculator' => \App\Services\Banner\CostCalculator::class,
         'App\Services\Sms\SmsSender' => \App\Services\Sms\SmsRu::class,
         'Elasticsearch\Client' => \Elasticsearch\Client::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
@@ -284,6 +287,7 @@ namespace PHPSTORM_META {
         'command.ide-helper.eloquent' => \Barryvdh\LaravelIdeHelper\Console\EloquentCommand::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsManager' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsManager::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator::class,
+        'Laravel\Socialite\Contracts\Factory' => \Laravel\Socialite\SocialiteManager::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
     ]));
     override(\Illuminate\Contracts\Container\Container::makeWith(0), map([
@@ -320,6 +324,7 @@ namespace PHPSTORM_META {
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
+        'App\Services\Banner\CostCalculator' => \App\Services\Banner\CostCalculator::class,
         'App\Services\Sms\SmsSender' => \App\Services\Sms\SmsRu::class,
         'Elasticsearch\Client' => \Elasticsearch\Client::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
@@ -423,6 +428,7 @@ namespace PHPSTORM_META {
         'command.ide-helper.eloquent' => \Barryvdh\LaravelIdeHelper\Console\EloquentCommand::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsManager' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsManager::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator::class,
+        'Laravel\Socialite\Contracts\Factory' => \Laravel\Socialite\SocialiteManager::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
     ]));
     override(\App::make(0), map([
@@ -459,6 +465,7 @@ namespace PHPSTORM_META {
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
+        'App\Services\Banner\CostCalculator' => \App\Services\Banner\CostCalculator::class,
         'App\Services\Sms\SmsSender' => \App\Services\Sms\SmsRu::class,
         'Elasticsearch\Client' => \Elasticsearch\Client::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
@@ -562,6 +569,7 @@ namespace PHPSTORM_META {
         'command.ide-helper.eloquent' => \Barryvdh\LaravelIdeHelper\Console\EloquentCommand::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsManager' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsManager::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator::class,
+        'Laravel\Socialite\Contracts\Factory' => \Laravel\Socialite\SocialiteManager::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
     ]));
     override(\App::makeWith(0), map([
@@ -598,6 +606,7 @@ namespace PHPSTORM_META {
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
+        'App\Services\Banner\CostCalculator' => \App\Services\Banner\CostCalculator::class,
         'App\Services\Sms\SmsSender' => \App\Services\Sms\SmsRu::class,
         'Elasticsearch\Client' => \Elasticsearch\Client::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
@@ -701,6 +710,7 @@ namespace PHPSTORM_META {
         'command.ide-helper.eloquent' => \Barryvdh\LaravelIdeHelper\Console\EloquentCommand::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsManager' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsManager::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator::class,
+        'Laravel\Socialite\Contracts\Factory' => \Laravel\Socialite\SocialiteManager::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
     ]));
     override(\app(0), map([
@@ -737,6 +747,7 @@ namespace PHPSTORM_META {
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
+        'App\Services\Banner\CostCalculator' => \App\Services\Banner\CostCalculator::class,
         'App\Services\Sms\SmsSender' => \App\Services\Sms\SmsRu::class,
         'Elasticsearch\Client' => \Elasticsearch\Client::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
@@ -840,6 +851,7 @@ namespace PHPSTORM_META {
         'command.ide-helper.eloquent' => \Barryvdh\LaravelIdeHelper\Console\EloquentCommand::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsManager' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsManager::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator::class,
+        'Laravel\Socialite\Contracts\Factory' => \Laravel\Socialite\SocialiteManager::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
     ]));
     override(\resolve(0), map([
@@ -876,6 +888,7 @@ namespace PHPSTORM_META {
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
+        'App\Services\Banner\CostCalculator' => \App\Services\Banner\CostCalculator::class,
         'App\Services\Sms\SmsSender' => \App\Services\Sms\SmsRu::class,
         'Elasticsearch\Client' => \Elasticsearch\Client::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
@@ -979,6 +992,7 @@ namespace PHPSTORM_META {
         'command.ide-helper.eloquent' => \Barryvdh\LaravelIdeHelper\Console\EloquentCommand::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsManager' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsManager::class,
         'DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator' => \DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator::class,
+        'Laravel\Socialite\Contracts\Factory' => \Laravel\Socialite\SocialiteManager::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
     ]));
 
