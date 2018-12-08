@@ -15,7 +15,7 @@ class FavoriteService
         $user->addToFavorites($advert->id);
     }
 
-    public function remove($userId, $advertId): void
+    public function remove($userId, $advertId)
     {
         $user = $this->getUser($userId);
         $advert = $this->getAdvert($advertId);

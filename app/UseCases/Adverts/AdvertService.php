@@ -24,6 +24,7 @@ class AdvertService
         $this->indexer = $indexer;
     }
 
+    /** Создание нового объявления */
     public function create($userId, $categoryId, $regionId, CreateRequest $request): Advert
     {
         /** @var User $user */
@@ -44,14 +45,18 @@ class AdvertService
                 'status' => Advert::STATUS_DRAFT,
             ]);
 
+            // производим ассоциативное связывание
             $advert->user()->associate($user);
             $advert->category()->associate($category);
             $advert->region()->associate($region);
 
             $advert->saveOrFail();
 
+            // Проходим по всем аттрибутам категории
             foreach ($category->allAttributes() as $attribute) {
+                // из реквеста получаем ид аттрибута
                 $value = $request['attributes'][$attribute->id] ?? null;
+                // если оно не пустое то добавляем через связь
                 if (!empty($value)) {
                     $advert->values()->create([
                         'attribute_id' => $attribute->id,
@@ -63,6 +68,7 @@ class AdvertService
         });
     }
 
+    /** Добавление фотографий к объявлению */
     public function addPhotos($id, PhotosRequest $request): void
     {
         $advert = $this->getAdvert($id);
@@ -77,6 +83,7 @@ class AdvertService
         });
     }
 
+    /** Редактирование объявления */
     public function edit($id, EditRequest $request): void
     {
         $advert = $this->getAdvert($id);
@@ -88,12 +95,14 @@ class AdvertService
         ]));
     }
 
+    /** Отправка на модерацию */
     public function sendToModeration($id): void
     {
         $advert = $this->getAdvert($id);
         $advert->sendToModeration();
     }
 
+    /** Одобрение модерации */
     public function moderate($id): void
     {
         $advert = $this->getAdvert($id);
@@ -102,6 +111,7 @@ class AdvertService
         $this->indexer->index($advert);
     }
 
+    /** Отклонение модерации */
     public function reject($id, RejectRequest $request): void
     {
         $advert = $this->getAdvert($id);
@@ -110,14 +120,18 @@ class AdvertService
         $this->indexer->remove($advert);
     }
 
+    /** Редактирование аттрибутов */
     public function editAttributes($id, AttributesRequest $request): void
     {
         $advert = $this->getAdvert($id);
 
         DB::transaction(function () use ($request, $advert) {
+            // сперва удаляем через связь атрибуты
             $advert->values()->delete();
+            // проходим по всем атрибутам категории
             foreach ($advert->category->allAttributes() as $attribute) {
                 $value = $request['attributes'][$attribute->id] ?? null;
+                // если не  пустое то заносим в бд
                 if (!empty($value)) {
                     $advert->values()->create([
                         'attribute_id' => $attribute->id,
@@ -129,6 +143,7 @@ class AdvertService
         });
     }
 
+    /** Истечение срока размещения объявления (статус на Close) */
     public function expire(Advert $advert): void
     {
         $advert->expire();
@@ -136,6 +151,7 @@ class AdvertService
         $this->indexer->remove($advert);
     }
 
+    /** Закрытие объявления */
     public function close($id): void
     {
         $advert = $this->getAdvert($id);
@@ -144,6 +160,7 @@ class AdvertService
         $this->indexer->remove($advert);
     }
 
+    /** Удаление объявления */
     public function remove($id): void
     {
         $advert = $this->getAdvert($id);
@@ -152,6 +169,7 @@ class AdvertService
         $this->indexer->remove($advert);
     }
 
+    /** Получение объявления из бд */
     private function getAdvert($id): Advert
     {
         return Advert::findOrFail($id);

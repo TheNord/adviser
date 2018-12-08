@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Str;
+use Laravel\Passport\HasApiTokens;
 use PhpParser\Builder;
 
 /**
@@ -26,7 +27,7 @@ use PhpParser\Builder;
  */
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens ,Notifiable;
 
     public const STATUS_WAIT = 'wait';
     public const STATUS_ACTIVE = 'active';
@@ -135,6 +136,7 @@ class User extends Authenticatable
         $this->update(['role' => $role]);
     }
 
+    /** Снимаем статус верификации телефона */
     public function unverifyPhone(): void
     {
         $this->phone_verified = false;
@@ -144,6 +146,9 @@ class User extends Authenticatable
         $this->saveOrFail();
     }
 
+    /** Добавляем данные об отправке СМС в базу для проверки на слишком частую
+     * отправку и генерируем сам токен
+     */
     public function requestPhoneVerification(Carbon $now): string
     {
         if (empty($this->phone)) {
@@ -152,6 +157,7 @@ class User extends Authenticatable
         if (!empty($this->phone_verify_token) && $this->phone_verify_token_expire && $this->phone_verify_token_expire->gt($now)) {
             throw new \DomainException('Token is already requested.');
         }
+
         $this->phone_verified = false;
         $this->phone_verify_token = (string)random_int(10000, 99999);
         $this->phone_verify_token_expire = $now->copy()->addSeconds(300);
@@ -160,6 +166,9 @@ class User extends Authenticatable
         return $this->phone_verify_token;
     }
 
+    /** Верификация телефоа
+     * Сравнение токена и проверка на истечение токена по времени
+     */
     public function verifyPhone($token, Carbon $now): void
     {
         if ($token !== $this->phone_verify_token) {
@@ -174,6 +183,7 @@ class User extends Authenticatable
         $this->saveOrFail();
     }
 
+    /** Включение двухфакторной авторизации */
     public function enablePhoneAuth(): void
     {
         if (!empty($this->phone) && !$this->isPhoneVerified()) {
@@ -183,12 +193,14 @@ class User extends Authenticatable
         $this->saveOrFail();
     }
 
+    /** Отключение двухфакторной авторизации */
     public function disablePhoneAuth(): void
     {
         $this->phone_auth = false;
         $this->saveOrFail();
     }
 
+    /** Добавление объявления в избранное */
     public function addToFavorites($id): void
     {
         if ($this->hasInFavorites($id)) {
@@ -247,8 +259,14 @@ class User extends Authenticatable
     /** Ищет пользователя в networks, по указанному драйверу и identity */
     public function scopeByNetwork(Builder $query, string $network, string $identity): Builder
     {
-        return $query->whereHas('networks', function(Builder $query) use ($network, $identity) {
+        return $query->whereHas('networks', function (Builder $query) use ($network, $identity) {
             $query->where('network', $network)->where('identity', $identity);
         });
+    }
+
+    /** Проверка активности пользователя для авторизации через API */
+    public function findForPassport($identifier)
+    {
+        return self::where('email', $identifier)->where('status', self::STATUS_ACTIVE)->first();
     }
 }

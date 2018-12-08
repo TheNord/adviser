@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Cabinet;
+namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\PhoneVerifyRequest;
 use App\UseCases\Profile\PhoneService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PhoneController extends Controller
@@ -17,23 +18,11 @@ class PhoneController extends Controller
     }
 
     /** Запрос смс кода */
-    public function request()
+    public function request(Request $request)
     {
-        try {
-            $this->service->request(Auth::id());
-        } catch (\DomainException $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }
+        $response = $this->service->request($request->user()->id);
 
-        return redirect()->route('cabinet.profile.phone');
-    }
-
-    /** Форма для ввода кода */
-    public function form()
-    {
-        $user = Auth::user();
-
-        return view('cabinet.profile.phone', compact('user'));
+        return $response;
     }
 
     /** Проверка полученного из формы кода и условия по времени */
