@@ -32,6 +32,7 @@ class AdvertsPath implements UrlRoutable
         return $clone;
     }
 
+    /** Склеиваем регионы и категории */
     public function getRouteKey()
     {
         $segments = [];
@@ -48,6 +49,7 @@ class AdvertsPath implements UrlRoutable
             });
         }
 
+        // разделяем результат через слэш
         return implode('/', $segments);
     }
 
@@ -84,6 +86,7 @@ class AdvertsPath implements UrlRoutable
             abort(404);
         }
 
+        // возвращает себя с проставленным регионом и категорией
         return $this
             ->withRegion($region)
             ->withCategory($category);

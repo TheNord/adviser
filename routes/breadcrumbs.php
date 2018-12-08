@@ -4,9 +4,11 @@ use App\Entity\Adverts\Advert\Advert;
 use App\Entity\Adverts\Attribute;
 use App\Entity\Adverts\Category;
 use App\Entity\Banner\Banner;
+use App\Entity\Page;
 use App\Entity\Region;
 use App\Entity\User;
 use App\Http\Router\AdvertsPath;
+use App\Http\Router\PagePath;
 use DaveJamesMiller\Breadcrumbs\BreadcrumbsGenerator as Crumbs;
 
 Breadcrumbs::register('home', function (Crumbs $crumbs) {
@@ -37,6 +39,22 @@ Breadcrumbs::register('password.reset', function (Crumbs $crumbs) {
     $crumbs->parent('password.request');
     $crumbs->push('Change', route('password.reset'));
 });
+
+// Pages привязывается к web.php -> name('page')
+
+Breadcrumbs::register('page', function (Crumbs $crumbs, PagePath $path) {
+    // если у текущей страницы имеется родитель
+    if ($parent = $path->page->parent) {
+        // добавляем его выше
+        $crumbs->parent('page', $path->withPage($path->page->parent));
+    } else {
+        // как закончились выводим главную
+        $crumbs->parent('home');
+    }
+    // передаем имя страницы и путь
+    $crumbs->push($path->page->title, route('page', $path));
+});
+
 
 // Adverts
 
@@ -296,4 +314,34 @@ Breadcrumbs::register('admin.adverts.categories.attributes.show', function (Crum
 Breadcrumbs::register('admin.adverts.categories.attributes.edit', function (Crumbs $crumbs, Category $category, Attribute $attribute) {
     $crumbs->parent('admin.adverts.categories.attributes.show', $category, $attribute);
     $crumbs->push('Edit', route('admin.adverts.categories.attributes.edit', [$category, $attribute]));
+});
+
+// Admin >> Pages
+
+Breadcrumbs::register('admin.pages.index', function (Crumbs $crumbs) {
+    $crumbs->parent('admin.home');
+    $crumbs->push('Pages', route('admin.pages.index'));
+});
+
+Breadcrumbs::register('admin.pages.create', function (Crumbs $crumbs) {
+    $crumbs->parent('admin.pages.index');
+    $crumbs->push('Create', route('admin.pages.create'));
+});
+
+Breadcrumbs::register('admin.pages.show', function (Crumbs $crumbs, Page $page) {
+    // если у текущей страницы есть родитель
+    if ($parent = $page->parent) {
+        // передаем парент выше чтобы отобразить еще одну хлебную крошку
+        $crumbs->parent('admin.pages.show', $parent);
+    } else {
+        // если родители закончились то выводим главную
+        $crumbs->parent('admin.pages.index');
+    }
+    // добавляя название нашей страницы и ссылку на саму страницу
+    $crumbs->push($page->title, route('admin.pages.show', $page));
+});
+
+Breadcrumbs::register('admin.pages.edit', function (Crumbs $crumbs, Page $page) {
+    $crumbs->parent('admin.pages.show', $page);
+    $crumbs->push('Edit', route('admin.pages.edit', $page));
 });
