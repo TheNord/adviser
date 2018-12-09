@@ -16,7 +16,7 @@ class PageRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255',
-            'menu_title' => 'required|string|max:255',
+            //'menu_title' => 'required|string|max:255',
             'parent' => 'nullable|integer|exists:pages,id',
             'content' => 'nullable|string',
             'description' => 'nullable|string',

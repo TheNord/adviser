@@ -35,6 +35,11 @@ class Page extends Model
     /** Получаем название в меню */
     public function getMenuTitle(): string
     {
-        return $this->menu_title ?: $this->title;
+        return $this->menu_title;
+    }
+
+    public function hasChildren()
+    {
+        return ($this->children()->count() > 0) ? true : false;
     }
 }

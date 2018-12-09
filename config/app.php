@@ -162,6 +162,8 @@ return [
         App\Providers\SmsServiceProvider::class,
         App\Providers\CacheServiceProvider::class,
         App\Providers\SearchServiceProvider::class,
+        // дополнительные переменные при рендеринге страниц
+        App\Providers\ComposerServiceProvider::class,
 
     ],
 
