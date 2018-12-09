@@ -122,6 +122,9 @@ Route::group(
         'middleware' => ['auth', 'can:admin-panel'],
     ],
     function () {
+        // загрузка изображений на сервер (редактор на страницах)
+        Route::post('/ajax/upload/image', 'UploadController@image')->name('ajax.upload.image');
+
         Route::get('/', 'HomeController@index')->name('home');
         Route::resource('users', 'UsersController');
         Route::post('/users/{user}/verify', 'UsersController@verify')->name('users.verify');

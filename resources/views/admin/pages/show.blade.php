@@ -35,7 +35,7 @@
     </table>
     <div class="card">
         <div class="card-body pb-1">
-            {!! nl2br(e($page->content)) !!}
+            {!! clean($page->content) !!}
         </div>
     </div>
 @endsection
