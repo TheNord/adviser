@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Entity\Adverts\Advert\Advert;
+use App\Entity\Adverts\Advert\Dialog\Dialog;
 use App\Entity\Banner\Banner;
 use App\Entity\Ticket\Ticket;
 use App\Entity\User;
@@ -73,5 +74,11 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manage-own-ticket', function (User $user, Ticket $ticket) {
             return $ticket->user_id === $user->id;
         });
+
+        Gate::define('read-own-advert-dialog', function (User $user, Dialog $dialog) {
+            return $dialog->user_id === $user->id || $dialog->client_id === $user->id ;
+        });
+
+
     }
 }

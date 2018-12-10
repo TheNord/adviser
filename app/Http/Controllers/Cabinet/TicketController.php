@@ -30,6 +30,8 @@ class TicketController extends Controller
     /** Страница просмотра тикета */
     public function show(Ticket $ticket)
     {
+        $this->checkAccess($ticket);
+
         return view('cabinet.tickets.show', compact('ticket'));
     }
 
@@ -78,7 +80,7 @@ class TicketController extends Controller
     private function checkAccess(Ticket $ticket): void
     {
         if (!Gate::allows('manage-own-ticket', $ticket)) {
-            abort(403);
+            abort(404);
         }
     }
 }

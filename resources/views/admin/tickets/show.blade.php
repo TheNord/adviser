@@ -110,7 +110,12 @@
     @foreach ($ticket->messages()->orderBy('id')->with('user')->get() as $message)
         <div class="card mb-3">
             <div class="card-header d-flex flex-row">
-                {{ $message->created_at }} by {{ $message->user->name }}
+                @if ($ticket->user_id !== $message->user_id)
+                    {{ $message->created_at }} от сотрудника службы поддержки: {{ $message->user->name }}
+                @else
+                    {{ $message->created_at }} от {{ $message->user->name }}
+                @endif
+
                 <form method="POST" action="{{ route('admin.tickets.message.destroy', [$ticket, $message]) }}" class="mr-1">
                     @csrf
                     @method('DELETE')

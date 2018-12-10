@@ -115,7 +115,7 @@
             <p style="margin-bottom: 20px">Seller: {{ $advert->user->name }}</p>
 
             <div class="d-flex flex-row mb-3">
-                <span class="btn btn-success mr-1"><span class="fa fa-envelope"></span> Send Message</span>
+                <a class="btn btn-success mr-1" href="{{ route('adverts.message.dialog', $advert) }}"><span class="fa fa-envelope"></span> Send Message</a>
                 <span class="btn btn-primary phone-button mr-1" data-source="{{ route('adverts.phone', $advert) }}"><span class="fa fa-phone"></span> <span class="number">Show Phone Number</span></span>
                 @if ($user && $user->hasInFavorites($advert->id))
                     <form method="POST" action="{{ route('adverts.favorites', $advert) }}" class="mr-1">

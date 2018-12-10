@@ -19,4 +19,6 @@
         <li><a class="nav-link" href="{{ route('page', page_path($page)) }}">{{ $page->getMenuTitle() }}</a></li>
     @endif
 
+
+
 @endforeach

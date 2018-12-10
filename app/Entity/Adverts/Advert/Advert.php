@@ -2,6 +2,7 @@
 
 namespace App\Entity\Adverts\Advert;
 
+use App\Entity\Adverts\Advert\Dialog\Dialog;
 use App\Entity\Adverts\Category;
 use App\Entity\Region;
 use App\Entity\User;
@@ -49,6 +50,7 @@ class Advert extends Model
         'expires_at' => 'datetime',
     ];
 
+    /** Список статусов */
     public static function statusesList(): array
     {
         return [
@@ -59,6 +61,7 @@ class Advert extends Model
         ];
     }
 
+    /** Отправка объявления на модерацию */
     public function sendToModeration(): void
     {
         if (!$this->isDraft()) {
@@ -72,6 +75,7 @@ class Advert extends Model
         ]);
     }
 
+    /** Модерирование объявления */
     public function moderate(Carbon $date): void
     {
         if ($this->status !== self::STATUS_MODERATION) {
@@ -84,6 +88,7 @@ class Advert extends Model
         ]);
     }
 
+    /** Отклонение объявления */
     public function reject($reason): void
     {
         $this->update([
@@ -92,6 +97,7 @@ class Advert extends Model
         ]);
     }
 
+    /** Истечение объявления */
     public function expire(): void
     {
         $this->update([
@@ -99,6 +105,7 @@ class Advert extends Model
         ]);
     }
 
+    /** Закрытие объявления */
     public function close(): void
     {
         $this->update([
@@ -106,6 +113,61 @@ class Advert extends Model
         ]);
     }
 
+    /** Написать новое сообщение автору объявления от клиента */
+    public function writeClientMessage(int $fromId, string $message): void
+    {
+        $this->getOrCreateDialogWith($fromId)->writeMessageByClient($fromId, $message);
+    }
+
+    /** Написать ответное сообщение от имени автора объявления */
+    public function writeOwnerMessage(int $toId, string $message): void
+    {
+        $this->getDialogWith($toId)->writeMessageByOwner($this->user_id, $message);
+    }
+
+    /** Чтение сообщения от клиента */
+    public function readClientMessages(int $dialogId): void
+    {
+        $this->getDialogWith($dialogId)->readByClient();
+    }
+
+    /** Чтение сообщения от владельца */
+    public function readOwnerMessages(int $dialogId): void
+    {
+        $this->getDialogWith($dialogId)->readByOwner();
+    }
+
+    /** Поиск диалога */
+    public function getDialogWith(int $dialogId): Dialog
+    {
+        // получаем диалог у которого user_id = id автора объявления
+        // и client_id = ид пользователя которому мы хотим ответить
+        $dialog = Dialog::where([
+            'id' => $dialogId
+        ])->first();
+
+        if (!$dialog) {
+            throw new \DomainException('Dialog is not found.');
+        }
+
+        return $dialog;
+    }
+
+    /** Получение или создание нового диалога от клиента */
+    public function getOrCreateDialogWith(int $userId): Dialog
+    {
+        if ($userId === $this->user_id) {
+            throw new \DomainException('Cannot send message to myself.');
+        }
+        // находим либо создаем
+        return $this->dialogs()->firstOrCreate([
+            'user_id' => $this->user_id,
+            'client_id' => $userId,
+        ]);
+    }
+
+
+    /** Получить значение атрибута */
     public function getValue($id)
     {
         foreach ($this->values as $value) {
@@ -116,6 +178,7 @@ class Advert extends Model
         return null;
     }
 
+    /** Изменение статуса объявления */
     public function isDraft(): bool
     {
         return $this->status === self::STATUS_DRAFT;
@@ -136,46 +199,61 @@ class Advert extends Model
         return $this->status === self::STATUS_CLOSED;
     }
 
+    /** Связь с пользователем */
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    /** Связь с категорией */
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
+    /** Связь с регионом */
     public function region()
     {
         return $this->belongsTo(Region::class, 'region_id', 'id');
     }
 
+    /** Связь с атрибутами */
     public function values()
     {
         return $this->hasMany(Value::class, 'advert_id', 'id');
     }
 
+    /** Связь с фотографиями */
     public function photos()
     {
         return $this->hasMany(Photo::class, 'advert_id', 'id');
     }
 
+    /** Связь с избранным */
     public function favorites()
     {
         return $this->belongsToMany(User::class, 'advert_favorites', 'advert_id', 'user_id');
     }
 
+    /** Связь с диалогами */
+    public function dialogs()
+    {
+        return $this->hasMany(Dialog::class, 'advert_id', 'id');
+    }
+
+    /** Скоп активности объявления */
     public function scopeActive(Builder $query)
     {
         return $query->where('status', self::STATUS_ACTIVE);
     }
 
+    /** Скоп связи с юзером */
     public function scopeForUser(Builder $query, User $user)
     {
         return $query->where('user_id', $user->id);
     }
 
+    /** Скоп связи с категорией */
     public function scopeForCategory(Builder $query, Category $category)
     {
         return $query->whereIn('category_id', array_merge(
@@ -184,6 +262,7 @@ class Advert extends Model
         ));
     }
 
+    /** Скоп связи с регионом */
     public function scopeForRegion(Builder $query, Region $region)
     {
         $ids = [$region->id];
@@ -194,9 +273,10 @@ class Advert extends Model
         return $query->whereIn('region_id', $ids);
     }
 
+    /** Скоп связи избранного у пользователя */
     public function scopeFavoredByUser(Builder $query, User $user)
     {
-        return $query->whereHas('favorites', function(Builder $query) use ($user) {
+        return $query->whereHas('favorites', function (Builder $query) use ($user) {
             $query->where('user_id', $user->id);
         });
     }

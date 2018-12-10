@@ -1,6 +1,7 @@
 <?php
 
 use App\Entity\Adverts\Advert\Advert;
+use App\Entity\Adverts\Advert\Dialog\Dialog;
 use App\Entity\Adverts\Attribute;
 use App\Entity\Adverts\Category;
 use App\Entity\Banner\Banner;
@@ -92,6 +93,17 @@ Breadcrumbs::register('adverts.show', function (Crumbs $crumbs, Advert $advert) 
     $crumbs->push($advert->title, route('adverts.show', $advert));
 });
 
+Breadcrumbs::register('adverts.cabinet.show', function (Crumbs $crumbs, Advert $advert) {
+    $crumbs->parent('adverts.index');
+    $crumbs->push($advert->title, route('adverts.show', $advert));
+});
+
+// Объявление >> Диалог
+Breadcrumbs::register('adverts.message.dialog', function (Crumbs $crumbs, Advert $advert) {
+    $crumbs->parent('adverts.show', $advert);
+    $crumbs->push('Диалоги', route('adverts.message.dialog', $advert));
+});
+
 // Cabinet
 
 Breadcrumbs::register('cabinet.home', function (Crumbs $crumbs) {
@@ -112,6 +124,24 @@ Breadcrumbs::register('cabinet.profile.edit', function (Crumbs $crumbs) {
 Breadcrumbs::register('cabinet.profile.phone', function (Crumbs $crumbs) {
     $crumbs->parent('cabinet.profile.home');
     $crumbs->push('Phone', route('cabinet.profile.phone'));
+});
+
+// Cabinet >> Messages
+
+Breadcrumbs::register('cabinet.messages.index', function (Crumbs $crumbs) {
+    $crumbs->parent('cabinet.home');
+    $crumbs->push('Messages', route('cabinet.messages.index'));
+});
+
+Breadcrumbs::register('cabinet.messages.show', function (Crumbs $crumbs, Dialog $dialog) {
+    $crumbs->parent('cabinet.messages.index');
+    $crumbs->push($dialog->advert->title, route('cabinet.messages.show', $dialog));
+});
+
+// Кабинет >> Объявление >> Диалог
+Breadcrumbs::register('cabinet.adverts.message', function (Crumbs $crumbs, Advert $advert) {
+    $crumbs->parent('adverts.cabinet.show', $advert);
+    $crumbs->push('Dialogs', route('cabinet.adverts.message', $advert));
 });
 
 // Cabinet >> Adverts

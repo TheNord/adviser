@@ -4,5 +4,6 @@
     <li class="nav-item"><a class="nav-link {{ $page === 'favorites' ? ' active' : '' }}" href="{{ route('cabinet.favorites.index') }}">Favorites</a></li>
     <li class="nav-item"><a class="nav-link {{ $page === 'profile' ? ' active' : '' }}" href="{{ route('cabinet.profile.home') }}">Profile</a></li>
     <li class="nav-item"><a class="nav-link {{ $page === 'banners' ? ' active' : '' }}" href="{{ route('cabinet.banners.index') }}">Banners</a></li>
+    <li class="nav-item"><a class="nav-link {{ $page === 'messages' ? ' active' : '' }}" href="{{ route('cabinet.messages.index') }}">Messages</a></li>
     <li class="nav-item"><a class="nav-link {{ $page === 'tickets' ? ' active' : '' }}" href="{{ route('cabinet.tickets.index') }}">Tickets</a></li>
 </ul>

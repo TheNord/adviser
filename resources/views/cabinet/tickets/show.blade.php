@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('content')
 
     @include('cabinet.tickets._nav')

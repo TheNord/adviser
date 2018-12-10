@@ -39,7 +39,13 @@ Route::group([
     Route::post('/show/{advert}/favorites', 'FavoriteController@add')->name('favorites');
     Route::delete('/show/{advert}/favorites', 'FavoriteController@remove');
 
+    // открытие диалога по объявлению
+    Route::get('/show/{advert}/message', 'DialogsController@show')->name('message.dialog');
+    Route::post('/show/{advert}/message/{dialog}', 'DialogsController@send')->name('message.send');
+
     Route::get('/{adverts_path?}', 'AdvertController@index')->name('index')->where('adverts_path', '.+');
+
+
 });
 
 Route::group(
@@ -68,6 +74,10 @@ Route::group(
 
         Route::resource('tickets', 'TicketController')->only(['index', 'show', 'create', 'store', 'destroy']);
         Route::post('tickets/{ticket}/message', 'TicketController@message')->name('tickets.message');
+
+        Route::get('messages', 'DialogsController@index')->name('messages.index');
+        Route::get('messages/{dialog}', 'DialogsController@show')->name('messages.show');
+        Route::post('messages/{dialog}', 'DialogsController@send')->name('messages.send');
 
         Route::group([
             'prefix' => 'adverts',
