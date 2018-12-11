@@ -7,7 +7,7 @@
         <div class="form-group">
             <label for="subject" class="col-form-label">Subject</label>
             <input id="subject" class="form-control{{ $errors->has('subject') ? ' is-invalid' : '' }}" name="subject"
-                   value="{{ old('subject') }}" required>
+                   value="{{ old('subject', 'Жалоба на диалог: ' . $dialog) }}" required>
             @if ($errors->has('subject'))
                 <span class="invalid-feedback"><strong>{{ $errors->first('subject') }}</strong></span>
             @endif

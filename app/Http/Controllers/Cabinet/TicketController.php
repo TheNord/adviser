@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Cabinet;
 
+use App\Entity\Adverts\Advert\Dialog\Dialog;
 use App\Entity\Ticket\Ticket;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ticket\CreateRequest;
 use App\Http\Requests\Ticket\MessageRequest;
 use App\UseCases\Tickets\TicketService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Input;
 
 class TicketController extends Controller
 {
@@ -38,7 +41,9 @@ class TicketController extends Controller
     /** Страница создания нового тикета */
     public function create()
     {
-        return view('cabinet.tickets.create');
+        $dialog = Input::get('dialog') ?: '';
+
+        return view('cabinet.tickets.create', compact('dialog'));
     }
 
     /** Создание нового тикета */
@@ -46,6 +51,17 @@ class TicketController extends Controller
     {
         try {
             $ticket = $this->service->create(Auth::id(), $request);
+        } catch (\DomainException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+        return redirect()->route('cabinet.tickets.show', $ticket);
+    }
+
+    /** Отправка жалобы на сообщение */
+    public function claim(Dialog $dialog)
+    {
+        try {
+            $ticket = $this->service->claim(Auth::id(), $dialog);
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }

@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+@section('styles')
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ asset('build/css/albery.css') }}" type="text/css">
+@endsection
+
 @section('content')
 
     @if ($advert->isDraft())
@@ -80,13 +85,32 @@
             <div style="margin-bottom: 20px">
                 <div class="row">
                     <div class="col-10">
-                        <div style="height: 400px; background: #f6f6f6; border: 1px solid #ddd"></div>
+                        <div style="height: 400px; background: #f6f6f6; border: 1px solid #ddd" class="albery-container">
+                            <div class="albery-wrapper">
+                                @foreach ($advert->getPhotos() as $photo)
+                                    <div class="albery-item">
+                                        <img src="{{ asset($photo) }}" alt="">
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="move-right">
+                                <a href="#" id="rightArrow"></a>
+                            </div>
+                            <div class="move-left">
+                                <a href="#" id="leftArrow"></a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-2">
-                        <div style="height: 100px; background: #f6f6f6; border: 1px solid #ddd"></div>
-                        <div style="height: 100px; background: #f6f6f6; border: 1px solid #ddd"></div>
-                        <div style="height: 100px; background: #f6f6f6; border: 1px solid #ddd"></div>
-                        <div style="height: 100px; background: #f6f6f6; border: 1px solid #ddd"></div>
+                    <div class="col-2 pagination-container">
+                        <div class="pagination-wrapper">
+                            @php ($i = 1)
+                            @foreach ($advert->getPhotos() as $photo)
+                                <div style="height: 100px; background: #f6f6f6; border: 1px solid #ddd" class="pagination-item" data-item="{{ $i }}">
+                                    <img src="{{ asset($photo) }}" alt="">
+                                </div>
+                                @php ($i++)
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
@@ -167,8 +191,24 @@
 
         </div>
         <div class="col-md-3">
-            <div style="height: 400px; background: #f6f6f6; border: 1px solid #ddd; margin-bottom: 20px"></div>
-            <div style="height: 400px; background: #f6f6f6; border: 1px solid #ddd; margin-bottom: 20px"></div>
+
+                    <div
+                            class="banner mb-3"
+                            data-url="{{ route('banner.get') }}"
+                            data-format="240x400"
+                            data-category="{{ $advert->category_id  }}"
+                            data-region="{{  $advert->region_id }}"
+                    ></div>
+
+                    <div
+                            class="banner mb-3"
+                            data-url="{{ route('banner.get') }}"
+                            data-format="240x400"
+                            data-category="{{ $advert->category_id  }}"
+                            data-region="{{  $advert->region_id }}"
+                    ></div>
+
+            </div>
         </div>
     </div>
 @endsection
@@ -203,4 +243,13 @@
             );
         }
     </script>
+
+    <script src="{{ asset('build/js/albery.js') }}"></script>
+    <script>
+        $('.albery-container').albery({
+            speed: 500,
+            imgWidth: 600,
+        });
+    </script>
 @endsection
+

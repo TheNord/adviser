@@ -2,6 +2,7 @@
 
 namespace App\UseCases\Tickets;
 
+use App\Entity\Adverts\Advert\Dialog\Dialog;
 use App\Entity\Ticket\Message;
 use App\Entity\Ticket\Ticket;
 use App\Http\Requests\Ticket\CreateRequest;
@@ -14,6 +15,15 @@ class TicketService
     public function create(int $userId, CreateRequest $request): Ticket
     {
         return Ticket::new($userId, $request['subject'], $request['content']);
+    }
+
+    /** Создание нового тикета - жалобы */
+    public function claim(int $userId, Dialog $dialog): Ticket
+    {
+        $subject = 'Жалоба';
+        $content = 'Жалоба на диалог: ' . $dialog->id;
+
+        return Ticket::new($userId, $subject, $content);
     }
 
     /** Редактирование тикета */

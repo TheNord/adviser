@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="d-flex flex-row mb-3">
+        <form method="POST" action="{{ route('cabinet.tickets.claim', $dialog) }}">
+        @csrf
+            <button type="submit" class="btn btn-sm btn-outline-primary">Пожаловаться</button>
+        </form>
+    </div>
+
+
 
     @foreach ($dialog->messages()->orderBy('id')->get() as $message)
         <div class="card mb-3">

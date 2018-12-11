@@ -45,7 +45,7 @@
 
                 <div class="form-group">
                     <label for="address" class="col-form-label">Address</label>
-                    <input id="address" type="number" class="form-control{{ $errors->has('address') ? ' is-invalid' : '' }}" name="address" value="{{ old('address', $advert->address) }}" required>
+                    <input id="address" type="text" class="form-control{{ $errors->has('address') ? ' is-invalid' : '' }}" name="address" value="{{ old('address', $advert->address) }}" required>
                     @if ($errors->has('address'))
                         <span class="invalid-feedback"><strong>{{ $errors->first('address') }}</strong></span>
                     @endif

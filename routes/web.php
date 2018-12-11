@@ -75,6 +75,8 @@ Route::group(
         Route::resource('tickets', 'TicketController')->only(['index', 'show', 'create', 'store', 'destroy']);
         Route::post('tickets/{ticket}/message', 'TicketController@message')->name('tickets.message');
 
+        Route::post('tickets/{dialog}/claim', 'TicketController@claim')->name('tickets.claim');
+
         Route::get('messages', 'DialogsController@index')->name('messages.index');
         Route::get('messages/{dialog}', 'DialogsController@show')->name('messages.show');
         Route::post('messages/{dialog}', 'DialogsController@send')->name('messages.send');

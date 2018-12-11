@@ -178,6 +178,18 @@ class Advert extends Model
         return null;
     }
 
+    /** Получаем первую фотографию объявления */
+    public function getFirstPhoto()
+    {
+        return $this->photos()->pluck('file')->first();
+    }
+
+    /** Получаем все фотографии объявления */
+    public function getPhotos()
+    {
+        return $this->photos()->pluck('file');
+    }
+
     /** Изменение статуса объявления */
     public function isDraft(): bool
     {

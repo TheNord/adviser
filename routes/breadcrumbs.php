@@ -161,6 +161,11 @@ Breadcrumbs::register('cabinet.adverts.photos', function (Crumbs $crumbs, Advert
     $crumbs->push('Photos', route('cabinet.adverts.photos', $advert));
 });
 
+Breadcrumbs::register('cabinet.adverts.edit', function (Crumbs $crumbs, Advert $advert) {
+    $crumbs->parent('adverts.cabinet.show', $advert);
+    $crumbs->push('Photos', route('cabinet.adverts.edit', $advert));
+});
+
 Breadcrumbs::register('cabinet.adverts.create.region', function (Crumbs $crumbs, Category $category, Region $region = null) {
     $crumbs->parent('cabinet.adverts.create');
     $crumbs->push($category->name, route('cabinet.adverts.create.region', [$category, $region]));
@@ -337,6 +342,13 @@ Breadcrumbs::register('admin.adverts.adverts.reject', function (Crumbs $crumbs, 
     $crumbs->parent('admin.home');
     $crumbs->push($advert->title, route('admin.adverts.adverts.reject', $advert));
 });
+
+Breadcrumbs::register('admin.adverts.adverts.photos', function (Crumbs $crumbs, Advert $advert) {
+    $crumbs->parent('admin.home');
+    $crumbs->push($advert->title, route('admin.adverts.adverts.photos', $advert));
+});
+
+
 
 // Admin >> Advert Categories
 
