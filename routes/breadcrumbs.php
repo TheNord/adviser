@@ -156,6 +156,11 @@ Breadcrumbs::register('cabinet.adverts.create', function (Crumbs $crumbs) {
     $crumbs->push('Create', route('cabinet.adverts.create'));
 });
 
+Breadcrumbs::register('cabinet.adverts.photos', function (Crumbs $crumbs, Advert $advert) {
+    $crumbs->parent('adverts.cabinet.show', $advert);
+    $crumbs->push('Photos', route('cabinet.adverts.photos', $advert));
+});
+
 Breadcrumbs::register('cabinet.adverts.create.region', function (Crumbs $crumbs, Category $category, Region $region = null) {
     $crumbs->parent('cabinet.adverts.create');
     $crumbs->push($category->name, route('cabinet.adverts.create.region', [$category, $region]));

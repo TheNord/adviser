@@ -14,7 +14,7 @@ class UploadController extends Controller
         $this->validate($request, [
             'file' => 'required|image|mimes:jpg,jpeg,png',
         ]);
-        // получаем из реквеста файл
+        // получаем из ре квеста файл
         $file = $request->file('file');
         // добавляем в хранилище с возвращением пути
         return asset($file->store('/uploads/images'));

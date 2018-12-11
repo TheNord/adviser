@@ -9,6 +9,7 @@ use App\Entity\Ticket\Ticket;
 use App\Entity\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Horizon\Horizon;
 use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
@@ -23,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPermissions();
 
         Passport::routes();
+
     }
 
     private function registerPermissions(): void

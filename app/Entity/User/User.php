@@ -27,7 +27,7 @@ use PhpParser\Builder;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens ,Notifiable;
+    use HasApiTokens, Notifiable;
 
     public const STATUS_WAIT = 'wait';
     public const STATUS_ACTIVE = 'active';

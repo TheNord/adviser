@@ -6,11 +6,13 @@ use App\Entity\Adverts\Advert\Advert;
 use App\Entity\Adverts\Category;
 use App\Entity\Region;
 use App\Entity\User;
+use App\Events\Advert\ModerationPassed;
 use App\Http\Requests\Adverts\AttributesRequest;
 use App\Http\Requests\Adverts\CreateRequest;
 use App\Http\Requests\Adverts\EditRequest;
 use App\Http\Requests\Adverts\PhotosRequest;
 use App\Http\Requests\Adverts\RejectRequest;
+use App\Notifications\Advert\ModerationPassedNotification;
 use App\Services\Search\AdvertIndexer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -108,7 +110,8 @@ class AdvertService
         $advert = $this->getAdvert($id);
         $advert->moderate(Carbon::now());
 
-        $this->indexer->index($advert);
+        // индексируем и уведомляем пользователя об успешном прохождении модерации объявления
+        event(new ModerationPassed($advert));
     }
 
     /** Отклонение модерации */
